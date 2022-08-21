@@ -1,6 +1,5 @@
 version: 2.1
 
-
 executors:
   node:
     docker:
@@ -11,7 +10,6 @@ executors:
   aws:
     docker:
       - image: amazon/aws-cli
-
 
 commands:
   destroy_environment:
@@ -35,7 +33,7 @@ commands:
             aws s3 rm s3://udapeople-<< parameters.id >> --recursive
             aws cloudformation delete-stack --stack-name udapeople-frontend-<< parameters.id >>
           environment:
-              TERM: xterm-256color
+            TERM: xterm-256color
           when: << parameters.when >>
 
   revert_migrations:
@@ -61,7 +59,6 @@ commands:
           when: << parameters.when >>
 
 jobs:
-
   install-backend-dependencies:
     executor: node
     steps:
@@ -75,10 +72,9 @@ jobs:
           paths:
             - backend/node_modules
 
-
   install-frontend-dependencies:
-   executor: node
-   steps:
+    executor: node
+    steps:
       - checkout
       - run:
           name: npm install
@@ -88,7 +84,6 @@ jobs:
           root: .
           paths:
             - frontend/node_modules
-
 
   build-backend:
     executor: node
@@ -105,7 +100,6 @@ jobs:
           paths:
             - backend/dist
 
-
   build-frontend:
     executor: node
     steps:
@@ -116,7 +110,6 @@ jobs:
           name: npm run build
           working_directory: ./frontend
           command: npm run build
-
 
   test-frontend:
     executor: node
@@ -139,7 +132,6 @@ jobs:
       - store_artifacts:
           path: ./frontend/test_results
 
-
   test-backend:
     executor: node
     steps:
@@ -161,7 +153,6 @@ jobs:
       - store_artifacts:
           path: ./backend/test_results
 
-
   scan-frontend:
     executor: node
     steps:
@@ -173,7 +164,6 @@ jobs:
           working_directory: ./frontend
           command: npm audit --audit-level=critical
 
-
   scan-backend:
     executor: node
     steps:
@@ -184,7 +174,6 @@ jobs:
           name: Check Backend against security vulnerabilities
           working_directory: ./backend
           command: npm audit --audit-level=critical
-
 
   deploy-infrastructure:
     executor: aws
@@ -237,7 +226,6 @@ jobs:
           id: ${CIRCLE_WORKFLOW_ID:0:7}
           when: on_fail
 
-
   configure-infrastructure:
     executor: python
     steps:
@@ -263,7 +251,6 @@ jobs:
       - destroy_environment:
           id: ${CIRCLE_WORKFLOW_ID:0:7}
           when: on_fail
-
 
   run-migrations:
     executor: node
@@ -300,7 +287,6 @@ jobs:
       - destroy_environment:
           id: ${CIRCLE_WORKFLOW_ID:0:7}
           when: on_fail
-
 
   deploy-frontend:
     executor: node
@@ -339,7 +325,6 @@ jobs:
           id: ${CIRCLE_WORKFLOW_ID:0:7}
           when: on_fail
 
-
   deploy-backend:
     executor: python
     steps:
@@ -368,7 +353,6 @@ jobs:
       - revert_migrations:
           id: ${CIRCLE_WORKFLOW_ID:0:7}
           when: on_fail
-
 
   smoke-test:
     executor: python
@@ -401,7 +385,6 @@ jobs:
           id: ${CIRCLE_WORKFLOW_ID:0:7}
           when: on_fail
 
-
   cloudfront-update:
     executor: aws
     steps:
@@ -433,7 +416,6 @@ jobs:
           id: ${CIRCLE_WORKFLOW_ID:0:7}
           when: on_fail
 
-
   cleanup:
     executor: aws
     steps:
@@ -457,7 +439,6 @@ jobs:
           environment:
             TERM: xterm-256color
 
-
 workflows:
   default:
     jobs:
@@ -476,7 +457,7 @@ workflows:
             - build-backend
       - test-frontend:
           requires:
-            -  build-frontend
+            - build-frontend
       - scan-backend:
           requires:
             - build-backend
@@ -497,8 +478,6 @@ workflows:
           requires:
             - test-backend
             - test-frontend
-            - scan-backend
-            - scan-frontend
             - configure-infrastructure
           filters:
             branches:
