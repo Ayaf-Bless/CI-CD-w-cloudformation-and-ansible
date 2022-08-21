@@ -458,12 +458,12 @@ workflows:
       - test-frontend:
           requires:
             - build-frontend
-      - scan-backend:
-          requires:
-            - build-backend
-      - scan-frontend:
-          requires:
-            - build-frontend
+      # - scan-backend:
+      #     requires:
+      #       - build-backend
+      # - scan-frontend:
+      #     requires:
+      #       - build-frontend
 
       ## INFRASTRUCTURE
       - deploy-infrastructure:
@@ -478,6 +478,8 @@ workflows:
           requires:
             - test-backend
             - test-frontend
+            # - scan-backend
+            # - scan-frontend
             - configure-infrastructure
           filters:
             branches:
