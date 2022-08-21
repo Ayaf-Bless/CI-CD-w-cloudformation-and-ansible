@@ -77,3 +77,4 @@ UserInterfaceState.xcuserstate
 .env
 dist
 cred.txt
+*.pem
